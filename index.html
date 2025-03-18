@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taekwondo Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f0f8ff;
+        }
+        .quiz-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        .options button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        #feedback {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Taekwondo Quiz</h1>
+        <p id="question"></p>
+        <div class="options" id="options"></div>
+        <p id="feedback"></p>
+        <button id="next" class="hidden">Next Question</button>
+        <p id="score"></p>
+    </div>
+    <script>
+        const questions = [
+            { question: "What is the Korean term for Kicks?", answer: "Chagi" },
+            { question: "What is the Korean term for Front Snap Kick?", answer: "Ap Cha Busigi" },
+            { question: "What is the Korean term for Side Piercing Kick?", answer: "Yop Cha Jirugi" },
+            { question: "What is the Korean term for Turning Kick?", answer: "Dollyo Chagi" },
+            { question: "What is the Korean term for Back Piercing Kick?", answer: "Dwitcha Jirugi" },
+            { question: "What is the Korean term for Flying Front Kick?", answer: "Twimyo Ap Chagi" },
+            { question: "What is the Korean term for Flying Side Kick?", answer: "Twimyo Yop Chagi" },
+            { question: "What is the Korean term for Reverse Turning Kick?", answer: "Bandae Dollyo Chagi" },
+            { question: "What is the Korean term for Side Front Snap Kick?", answer: "Yop Ap Cha Busigi" },
+            { question: "What is the Korean term for Flying Turning Kick?", answer: "Twimyo Dollyo Chagi" },
+            { question: "What is the Korean term for Flying Back Kick?", answer: "Twimyo Dwit Cha Jirugi" },
+            { question: "What is the Korean term for Knee Upward Kick?", answer: "Moorup Ollyo Chagi" },
+            { question: "What is the Korean term for Flying Reverse Turning Kick?", answer: "Twimyo Bandae Dollyo Chagi" },
+            { question: "What does 'Do' in Taekwondo mean?", answer: "The way or path" },
+            { question: "How many belts are there in ITF Taekwondo?", answer: "10" },
+            { question: "What is the Korean term for a Taekwondo uniform?", answer: "Dobok" },
+            { question: "What is the meaning of 'Taekwondo'?", answer: "The way of the foot and fist" },
+            { question: "Which country founded Taekwondo?", answer: "South Korea" },
+            { question: "What is the Korean term for a Taekwondo master?", answer: "Sabum" },
+            { question: "What is the Korean term for a Taekwondo student?", answer: "Jeja" },
+            { question: "What is the Korean term for Strikes?", answer: "Taerigi" },
+            { question: "What is the Korean term for Knifehand Strike?", answer: "Sonkal Taerigi" },
+            { question: "What is the Korean term for Inward Knifehand Strike?", answer: "Anuro Sonkal Taerigi" },
+            { question: "What is the Korean term for Front Elbow Strike?", answer: "Ap Palkup Taerigi" },
+            { question: "What is the Korean term for Upward Elbow Strike?", answer: "Wi Palkup Taerigi" },
+            { question: "What is the Korean term for Back Fist Side Strike?", answer: "Yop Dung Joomuk Taerigi" },
+            { question: "What is the Korean term for Backfist Side-Back Strike?", answer: "Dung Joomuk Yopdwi Taerigi" },
+            { question: "What is the Korean term for 1?", answer: "Hana" },
+            { question: "What is the Korean term for 2?", answer: "Dool" },
+            { question: "What is the Korean term for 3?", answer: "Set" },
+            { question: "What is the Korean term for 4?", answer: "Net" },
+            { question: "What is the Korean term for 5?", answer: "Tasot" },
+            { question: "What is the Korean term for 6?", answer: "Yaset" },
+            { question: "What is the Korean term for 7?", answer: "Ilgop" },
+            { question: "What is the Korean term for 8?", answer: "Yadul" },
+            { question: "What is the Korean term for 9?", answer: "Ahop" },
+            { question: "What is the Korean term for 10?", answer: "Yol" },
+            { question: "What is the Korean term for Blocks?", answer: "Makgi" },
+            { question: "What is the Korean term for Outer Forearm Block?", answer: "Bakat Palmok Makgi" },
+            { question: "What is the Korean term for Inner Forearm Block?", answer: "An Palmok Makgi" },
+            { question: "What is the Korean term for Knifehand Low Block?", answer: "Sonkal Najunde Makgi" },
+            { question: "What is the Korean term for Guarding Block?", answer: "Daebi Makgi" },
+            { question: "What is the Korean term for Double Forearm Block?", answer: "Doo Palmok Makgi" },
+            { question: "What is the Korean term for Hooking Block?", answer: "Golcha Makgi" },
+            { question: "What is the Korean term for Twin Forearm Block?", answer: "Sang Palmok Makgi" },
+            { question: "What is the Korean term for Rising Block?", answer: "Chookyo Makgi" },
+            { question: "What is the Korean term for Twin Knifehand Block?", answer: "Sang Sonkal Makgi" },
+            { question: "What is the Korean term for Waist Block?", answer: "Hori Makgi" },
+            { question: "What is the Korean term for Reverse Knifehand Block?", answer: "Sonkal Dung Makgi" },
+            { question: "What is the Korean term for Upward Palm Block?", answer: "Ollyo Sonbadak Makgi" },
+            { question: "What is the Korean term for X-Fist Rising Block?", answer: "Kyocha Joomuk Chookyo Makgi" },
+            { question: "What is the Korean term for X-Fist Pressing Block?", answer: "Kyocha Joomuk Noollo Makgi" },
+            { question: "What is the Korean term for Pressing Block?", answer: "Sonbadak Noollo Makgi" },
+            { question: "What is the Korean term for U-Shape Block?", answer: "Digutja Makgi" },
+            { question: "What is the Korean term for W-Shape Block?", answer: "San Makgi" },
+            { question: "What is the Korean term for Double Forearm Pushing Block?", answer: "Doo Palmok Miro Makgi" },
+            { question: "What is the Korean term for Circular Block?", answer: "Dollimyo Makgi" },
+            { question: "What is the Korean term for Pushing Block?", answer: "Miro Makgi" },
+            { question: "What is the Korean term for Thrust?", answer: "Tulgi" },
+            { question: "What is the Korean term for Straight Fingertip Thrust?", answer: "Sun Sonkut Tulgi" },
+            { question: "What is the Korean term for Back Elbow Thrust?", answer: "Dwit Palkup Tulgi" },
+            { question: "What is the Korean term for Flat Fingertip Thrust?", answer: "Opun Sonkut Tulgi" },
+            { question: "What is the Korean term for Upset Fingertip Thrust?", answer: "Dwijibun Sonkut Tulgi" },
+            { question: "What is the Korean term for Twin Side Elbow Thrust?", answer: "Sang Yop Palkup Tulgi" },
+            { question: "What is the Korean term for Fist?", answer: "Joomuk" },
+            { question: "What is the Korean term for Knifehand?", answer: "Sonkal" },
+            { question: "What is the Korean term for Fingertips?", answer: "Sonkut" },
+            { question: "What is the Korean term for Back Fist?", answer: "Dung Joomuk" },
+            { question: "What is the Korean term for Elbow?", answer: "Palkup" },
+            { question: "What is the Korean term for Ball of Foot?", answer: "Ap Kumchi" },
+            { question: "What is the Korean term for Back Sole?", answer: "Dwit Kumchi" },
+            { question: "What is the Korean term for Back Heel?", answer: "Dwitchook" },
+            { question: "What is the Korean term for Toes?", answer: "Balkut" },
+            { question: "What is the Korean term for Knee?", answer: "Moorup" },
+            { question: "What is the Korean term for Obverse Punch?", answer: "Baro Jirugi" },
+            { question: "What is the Korean term for Reverse Punch?", answer: "Bandae Jirugi" },
+            { question: "What is the Korean term for Fore Fist Punch?", answer: "Ap Joomuk Jirugi" },
+            { question: "What is the Korean term for Double Punch?", answer: "Doo Jirugi" },
+            { question: "What is the Korean term for Side Punch?", answer: "Yop Jirugi" },
+            { question: "What is the Korean term for Twin Vertical Punch?", answer: "Sang Sewo Jirugi" },
+            { question: "What is the Korean term for Twin Upset Punch?", answer: "Sang Dwijibo Jirugi" },
+            { question: "What is the Korean term for Angle Punch?", answer: "Giokja Jirugi" },
+            { question: "What is the Korean term for Low?", answer: "Najunde" },
+            { question: "What is the Korean term for Middle?", answer: "Kaunde" },
+            { question: "What is the Korean term for High?", answer: "Nopunde" },
+            { question: "What is the pattern name for 9th Kup?", answer: "CHONGI-TUL" },
+            { question: "How many moves are there in the CHONGI-TUL pattern?", answer: "19" },
+            { question: "What is the pattern diagram in CHONGI-TUL?", answer: "Plus/ Cross" },
+            { question: "What is the pattern definition of CHONGI-TUL?", answer: "CHON-JI literally means 'the Heaven and the Earth', which in the Orient is interpreted as the creation of the world or the beginning of human history. This is why it is the initial pattern performed by the beginner. This pattern consists of two parts; one to represent the Heaven and the other the Earth." },
+            { question: "What is the pattern name for 8th Kup?", answer: "DANGUN-TUL" },
+            { question: "How many moves are there in the DANGUN-TUL pattern?", answer: "21" },
+            { question: "What is the pattern diagram in DANGUN-TUL?", answer: "I-Shape" },
+            { question: "What is the pattern definition of DANGUN-TUL?", answer: "DAN-GUN is named after the holy Dan-Gun, the legendary founder of Korea in the year 2333 B.C." },
+            { question: "What is the pattern name for 7th Kup?", answer: "DOSAN-TUL" },
+            { question: "How many moves are there in the DOSAN-TUL pattern?", answer: "24" },
+            { question: "What is the pattern diagram in DOSAN-TUL?", answer: "S-Shape" },
+            { question: "What is the pattern definition of DOSAN-TUL?", answer: "DO-SAN is the pseudonym of the patriot An Chang Ho (1876-1938) who devoted his entire life to furthering the education of Korea and its independent movement." },
+            { question: "What is the pattern name for 6th Kup?", answer: "WONHYO-TUL" },
+            { question: "How many moves are there in the WONHYO-TUL pattern?", answer: "28" },
+            { question: "What is the pattern diagram in WONHYO-TUL?", answer: "I-Shape" },
+            { question: "What is the pattern definition of WONHYO-TUL?", answer: "WON-HYO was the noted monk who introduced Buddhism into the Silla Dynasty in the year of 686 AD." },
+            { question: "What is the pattern name for 5th Kup?", answer: "YULGOK-TUL" },
+            { question: "How many moves are there in the YULGOK-TUL pattern?", answer: "38" },
+            { question: "What is the pattern diagram in YULGOK-TUL?", answer: "Plus/ Cross" },
+            { question: "What is the pattern definition of YULGOK-TUL?", answer: "YUL-GOK is the pseudonym of a great philosopher and scholar Yi I (1536-1584), nicknamed the 'Confucius of Korea.' The 38 movements refer to his birthplace on 38 latitude, and the diagram represents a scholar." },
+            { question: "What is the pattern name for 4th Kup?", answer: "JOONGUN-TUL" },
+            { question: "How many moves are there in the JOONGUN-TUL pattern?", answer: "32" },
+            { question: "What is the pattern diagram in JOONGUN-TUL?", answer: "I-Shape" },
+            { question: "What is the pattern definition of JOONGUN-TUL?", answer: "JOONGUN-TUL is named after the patriot An Joong Gun, who assassinated Hiro Bumi Ito, the first Japanese Governor General of Korea, known as the man who played the leading part in the Korea-Japan merger. There are 32 movements to represent Mr. An's age when he was executed in Lui-Shang prison (1910)." },
+            { question: "What is the pattern name for 3rd Kup?", answer: "TOIGYE-TUL" },
+            { question: "How many moves are there in the TOIGYE-TUL pattern?", answer: "37" },
+            { question: "What is the pattern diagram in TOIGYE-TUL?", answer: "Plus and Minus" },
+            { question: "What is the pattern definition of TOIGYE-TUL?", answer: "TOI-GYE is the pen name of the noted scholar Yi Hwang (16th Century), an authority on neo-Confucianism. The 37 movements of the pattern refer to his birthplace on 37 latitude, and the diagram represents a 'scholar.'" },
+            { question: "What is the pattern name for 2nd Kup?", answer: "HWARANG-TUL" },
+            { question: "How many moves are there in the HWARANG-TUL pattern?", answer: "29" },
+            { question: "What is the pattern diagram in HWARANG-TUL?", answer: "I-Shape" },
+            { question: "What is the pattern definition of HWARANG-TUL?", answer: "HWA-RANG is named after the Hwa-Rang youth group, which originated in the Silla Dynasty in the early 7th century. The 29 movements refer to the 29th Infantry Division, where TaeKwon-Do developed into maturity." },
+            { question: "What is the pattern name for 1st Kup?", "answer": "CHOONG-MOO-TUL" },
+            { question: "How many moves are there in the CHOONG-MOO-TUL pattern?", answer: "30" },
+            { question: "What is the pattern diagram in CHOONG-MOO-TUL?", answer: "I-Shape" },
+            { question: "What is the pattern definition of CHOONG-MOO-TUL?", answer: "Choong-Moo was the name given to the great Admiral Yi Soon-Sin of the Lee Dynasty. He was reputed to have invented the first armoured battleship (Kobukson) in 1592, which is said to be the precursor of the present-day submarine. The reason why this pattern ends with a left-hand attack is to symbolize his regrettable death, having no chance to show his unrestrained potentiality checked by the forced reservation of his loyalty to the king." },
+            { question: "What does the White belt represent in Taekwondo?", answer: "Represents innocence and the student's lack of previous knowledge of Taekwondo." },
+            { question: "What does the Yellow belt symbolize in Taekwondo?", answer: "Symbolizes the earth from which the plant sprouts, representing the foundation of Taekwondo training." },
+            { question: "What does the Green belt signify in Taekwondo?", answer: "Signifies the plant's growth as Taekwondo skills begin to develop." },
+            { question: "What does the Blue belt represent in Taekwondo?", answer: "Represents the sky and the heavens, towards which the tree grows as Taekwondo training progresses." },
+            { question: "What does the Red belt signify in Taekwondo?", answer: "Signifies danger, cautioning the student to exercise control and warning an opponent to stay away." },
+            { question: "What does the Black belt represent in Taekwondo?", answer: "Represents maturity and proficiency in Taekwondo, as well as a symbol of the student's imperviousness to darkness and fear." },
+            { question: "What is the Korean term for Fast Motion?", answer: "Barun Dongjak" },
+            { question: "What is the Korean term for Slow Motion?", answer: "Neunin Dongjak" },
+            { question: "What is the Korean term for Continuous Motion?", answer: "Yoelryeok Dongjak" },
+            { question: "What is the Korean term for Continuing Motion?", answer: "Guenjoek Dongjak" },
+            { question: "What is the Korean term for Grasping Motion?", answer: "Butjaba Dongjak" },
+            { questiom: "What is the Korean term for Flying?", answer: "Twimyo" },
+            { question: "What is the Korean term for Jumping?", answer: "Twigi" },
+            { question: "What is the Korean term for Wrist Release?", answer: "Jappyosul Tae" }
+        ];
+       let currentQuestionIndex = 0;
+let score = 0;
+let quizPaused = false;
+
+// Shuffle the questions array to randomize the order
+function shuffleQuestions() {
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+}
+
+function loadQuestion() {
+    document.getElementById("next").classList.add("hidden");
+    document.getElementById("feedback").textContent = "";
+    
+    const currentQuestion = questions[currentQuestionIndex];
+    document.getElementById("question").innerText = currentQuestion.question;
+    const optionsContainer = document.getElementById("options");
+    optionsContainer.innerHTML = "";
+
+    // Generate random wrong answers
+    let allAnswers = [...new Set(questions.map(q => q.answer))]; 
+    let incorrectAnswers = allAnswers.filter(ans => ans !== currentQuestion.answer)
+                                     .sort(() => Math.random() - 0.5)
+                                     .slice(0, 3); // Pick 3 wrong answers
+
+    let options = [...incorrectAnswers, currentQuestion.answer]; // Add correct answer
+    options.sort(() => Math.random() - 0.5); // Shuffle options again
+
+    options.forEach(option => {
+        let button = document.createElement("button");
+        button.innerText = option;
+        button.onclick = () => checkAnswer(option, currentQuestion.answer);
+        optionsContainer.appendChild(button);
+    });
+}
+
+function checkAnswer(selected, correct) {
+    if (selected === correct) {
+        document.getElementById("feedback").textContent = "Correct!";
+        document.getElementById("feedback").style.color = "green";
+        score++;
+    } else {
+        document.getElementById("feedback").textContent = `Wrong! The correct answer is: ${correct}`;
+        document.getElementById("feedback").style.color = "red";
+    }
+    document.getElementById("next").classList.remove("hidden");
+}
+
+// Event Listener for "Next" button
+document.getElementById("next").onclick = function () {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+    } else {
+        endQuiz();
+    }
+};
+
+// Save progress in localStorage
+function saveProgress() {
+    localStorage.setItem("quizProgress", JSON.stringify({
+        currentQuestionIndex: currentQuestionIndex,
+        score: score,
+        quizPaused: quizPaused
+    }));
+}
+
+// Load quiz state from localStorage if available
+document.addEventListener("DOMContentLoaded", function() {
+    if (localStorage.getItem("quizProgress")) {
+        try {
+            const savedState = JSON.parse(localStorage.getItem("quizProgress"));
+            currentQuestionIndex = savedState.currentQuestionIndex || 0;
+            score = savedState.score || 0;
+            quizPaused = savedState.quizPaused || false;
+
+            if (quizPaused && document.getElementById("pause")) {
+                document.getElementById("pause").innerText = "Resume";
+            }
+        } catch (error) {
+            console.error("Error loading saved quiz progress:", error);
+        }
+    }
+
+    // Start quiz if not paused
+    if (!quizPaused) {
+        shuffleQuestions();
+        loadQuestion();
+    }
+});
+
+// Finish quiz and show score
+function endQuiz() {
+    document.getElementById("question").innerText = `Quiz Finished! Your score is: ${score}/${questions.length}`;
+    document.getElementById("options").innerHTML = "";
+    document.getElementById("next").classList.add("hidden");
+
+    if (document.getElementById("pause")) {
+        document.getElementById("pause").classList.add("hidden");
+    }
+    if (document.getElementById("finish")) {
+        document.getElementById("finish").classList.add("hidden");
+    }
+}
+
+// Pause and resume the quiz
+function togglePause() {
+    if (quizPaused) {
+        quizPaused = false;
+        if (document.getElementById("pause")) {
+            document.getElementById("pause").innerText = "Pause";
+        }
+        loadQuestion();
+    } else {
+        quizPaused = true;
+        if (document.getElementById("pause")) {
+            document.getElementById("pause").innerText = "Resume";
+        }
+        saveProgress();
+    }
+}
+
+// Event listeners for buttons (only if they exist)
+document.addEventListener("DOMContentLoaded", function() {
+    if (document.getElementById("pause")) {
+        document.getElementById("pause").addEventListener("click", togglePause);
+    }
+    if (document.getElementById("finish")) {
+        document.getElementById("finish").addEventListener("click", endQuiz);
+    }
+});
